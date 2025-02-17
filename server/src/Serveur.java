@@ -1,8 +1,10 @@
-package server;
+package server.src;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+
+import server.environment.environment;
 
 public class Serveur {
     private static ServerSocket Listener; // Application Serveur
