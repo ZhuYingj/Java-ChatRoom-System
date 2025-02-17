@@ -16,20 +16,15 @@ public class Serveur {
         Listener = new ServerSocket();
         Listener.setReuseAddress(true);
         InetAddress serverIP = InetAddress.getByName(serverPort.serverAddress);
-        // Association de l'adresse et du port à la connexien
+        
         Listener.bind(new InetSocketAddress(serverIP, serverPort.serverPort));
         System.out.format("The server is running on %s:%d%n", serverPort.serverAddress, serverPort.serverPort);
         try {
-        // À chaque fois qu'un nouveau client se, connecte, on exécute la fonstion
-        // run() de l'objet ClientHandler
-        while (true) {
-        // Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
-        // Une nouvetle connection : on incémente le compteur clientNumber new ClientHandler(Listener.accept(), clientNumber++).start();
-        new ClientHandler(Listener.accept(), clientNumber++).start();    
-    }
+            while (true) {
+                new ClientHandler(Listener.accept(), clientNumber++).start();
+            }
         } finally {
-        // Fermeture de la connexion
-        Listener.close();
-        }   
-    } 
+            Listener.close();
+        }
+    }
 }

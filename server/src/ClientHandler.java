@@ -3,7 +3,7 @@ package server.src;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-public class ClientHandler extends Thread { // pour traiter la demande de chaque client sur un socket particulier
+public class ClientHandler extends Thread {
     
     private Socket socket; 
     private int clientNumber; 
@@ -13,10 +13,10 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
         System.out.println("New connection with client#" + clientNumber + " at" + socket);
     }
     
-    public void run() { // Création de thread qui envoi un message à un client
+    public void run() { 
         try {
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message} catch (IOException e) {
-            System.out.println("Error handling client# " + clientNumber + ": " + "error");
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); 
+            out.writeUTF("Hello from server - you are client#" + clientNumber);
         } catch (IOException e) {
             System.out.println("Error handling client# " + clientNumber + ": " + e);
         } finally {
