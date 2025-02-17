@@ -1,19 +1,18 @@
-package server.src;
+package server;
+
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
-import server.environment.environment;
+import environment.environment;
+import server.src.ClientHandler;
 
 public class Serveur {
     private static ServerSocket Listener; // Application Serveur
     public static void main(String[] args) throws Exception {
-        // Compteur incrémenté à chaque connexion d'un client au serveur
-        // int clientNumber = 0;
-        // Adresse et port du serveur
-        // String serverAddress = "127.0.0.1"; // int serverPort = 5000;
-        // Création de la connexien pour communiquer ave les, clients
+        int clientNumber = 0;
+        
         Listener = new ServerSocket();
         Listener.setReuseAddress(true);
         InetAddress serverIP = InetAddress.getByName(environment.serverAddress);
@@ -26,7 +25,8 @@ public class Serveur {
         while (true) {
         // Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
         // Une nouvetle connection : on incémente le compteur clientNumber new ClientHandler(Listener.accept(), clientNumber++).start();
-        }
+        new ClientHandler(Listener.accept(), clientNumber++).start();    
+    }
         } finally {
         // Fermeture de la connexion
         Listener.close();
