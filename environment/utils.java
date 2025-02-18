@@ -1,10 +1,9 @@
 package environment;
 
 import java.util.Scanner;
-
 import javafx.util.Pair;
 
-public class utils {
+public class Utils {
     public static Pair<String, String> getServerInfo() {
         @SuppressWarnings("resource")
         Scanner scanner = new Scanner(System.in);
@@ -19,10 +18,10 @@ public class utils {
     public static boolean isServerIpValid(String serverIp) {
         String[] numbers = serverIp.split("\\.");
         try {
-            if(numbers.length == serverConst.MAX_DEC_IN_IP && Integer.parseInt(numbers[0]) == serverConst.IP_FIRST_DEC) {
+            if(numbers.length == ServerConst.MAX_DEC_IN_IP && Integer.parseInt(numbers[0]) == ServerConst.IP_FIRST_DEC) {
                 for (int i = 1; i < numbers.length; i++) {
                     int dec = Integer.parseInt(numbers[i]);
-                    if (dec < serverConst.IP_MAX_DEC && dec > serverConst.IP_MIN_DEC) {
+                    if (dec < ServerConst.IP_MAX_DEC && dec > ServerConst.IP_MIN_DEC) {
                     
                     } else {
                         return false;
@@ -39,7 +38,7 @@ public class utils {
     public static boolean isServerPortValid(String serverPort) {
         try {
             int port = Integer.parseInt(serverPort);
-            if (port < serverConst.MAX_PORT && port > serverConst.MIN_PORT) {
+            if (port < ServerConst.MAX_PORT && port > ServerConst.MIN_PORT) {
                 return true;
             } else {
                 return false;
@@ -48,4 +47,5 @@ public class utils {
             return false;
         } 
     }
+
 }

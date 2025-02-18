@@ -1,6 +1,6 @@
 package environment;
 
-public class serverConst {
+public class ServerConst {
     public static String serverAddress = "127.69.69.69";
     public static int IP_FIRST_DEC = 127;
     public static int IP_MAX_DEC = 255;

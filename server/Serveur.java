@@ -3,7 +3,7 @@ package server;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import environment.utils;
+import environment.Utils;
 import javafx.util.Pair;
 import server.src.ClientHandler;
 
@@ -16,8 +16,8 @@ public class Serveur {
         boolean isServerInfoValid = false;
 
         while (!isServerInfoValid) {
-            serverInfo = utils.getServerInfo();
-            if (utils.isServerIpValid(serverInfo.getKey()) && utils.isServerPortValid(serverInfo.getValue())) {
+            serverInfo = Utils.getServerInfo();
+            if (Utils.isServerIpValid(serverInfo.getKey()) && Utils.isServerPortValid(serverInfo.getValue())) {
                 isServerInfoValid = true;
             } else {
                 System.out.println("The serverIp or the serverPort is invalid, try again.");

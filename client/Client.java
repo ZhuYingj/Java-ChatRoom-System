@@ -1,8 +1,10 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import environment.utils;
+
+import environment.Utils;
 import javafx.util.Pair;
+import src.clientUtils;
 
 public class Client {
     private static Socket socket;
@@ -11,8 +13,8 @@ public class Client {
         boolean isConnected = false;
 
         while (!isConnected) {
-            serverInfo = utils.getServerInfo();
-            if (utils.isServerIpValid(serverInfo.getKey()) && utils.isServerPortValid(serverInfo.getValue())) {
+            serverInfo = Utils.getServerInfo();
+            if (Utils.isServerIpValid(serverInfo.getKey()) && Utils.isServerPortValid(serverInfo.getValue())) {
                 try {
                     socket = new Socket(serverInfo.getKey(), Integer.parseInt(serverInfo.getValue()));
                     isConnected = true;
@@ -23,14 +25,22 @@ public class Client {
                 System.out.println("The format of the serverIp or the serverPort is invalid, try again.");
             }
         }
+
         String ip = serverInfo.getKey();
         int port = Integer.parseInt(serverInfo.getValue());
-        
         System.out.format("Serveur lancé sur [%s:%d]", ip, port);
-        DataInputStream in = new DataInputStream(socket.getInputStream());
-        
-        String helloMessageFromServer = in.readUTF();
+
+        DataInputStream inServer = new DataInputStream(socket.getInputStream());
+        String helloMessageFromServer = inServer.readUTF();
         System.out.println(helloMessageFromServer);
+
+        boolean isLoggedin = false;
+        while(!isLoggedin) {
+            String serverResponse = clientUtils.login(socket);
+            if (serverResponse == "You are connected") {
+                isLoggedin = true;
+            }
+        }
         
         socket.close();
         }

@@ -1,5 +1,6 @@
 package server.src;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -15,8 +16,27 @@ public class ClientHandler extends Thread {
     
     public void run() { 
         try {
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); 
-            out.writeUTF("Hello from server - you are client#" + clientNumber);
+            DataOutputStream outServer = new DataOutputStream(socket.getOutputStream()); 
+            outServer.writeUTF("Hello from server - you are client#" + clientNumber);
+            boolean isConnected = false;
+
+            while(true){
+                while(!isConnected) {
+                    DataInputStream inClient = new DataInputStream(socket.getInputStream());
+                    outServer.writeUTF("Enter your username: ");
+                    String username = inClient.readUTF();
+                    outServer.writeUTF("Enter your password: ");
+                    String password = inClient.readUTF();
+                    
+                    if (ServerUtils.logIn(username, password)) {
+                        isConnected = true;
+                        outServer.writeUTF("You are connected");
+                        System.out.println("The client #" + clientNumber + " is loggedIn.");
+                    } else {
+                        outServer.writeUTF("Wrong username or password, try again. \n");
+                    }
+                }
+            }
         } catch (IOException e) {
             System.out.println("Error handling client# " + clientNumber + ": " + e);
         } finally {
