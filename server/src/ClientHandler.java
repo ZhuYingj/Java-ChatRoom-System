@@ -1,5 +1,7 @@
 package server.src;
 
+import environment.Pair;
+
 import java.io.*;
 import java.net.Socket;
 public class ClientHandler extends Thread {
@@ -25,22 +27,25 @@ public class ClientHandler extends Thread {
                     String username = inClient.readUTF();
                     outServer.writeUTF("Enter your password: ");
                     String password = inClient.readUTF();
-                    
-                    if (ServerUtils.logIn(username, password)) {
+
+                    Pair<Boolean, Boolean> logInResult = ServerUtils.logIn(username, password);
+                    if (logInResult.getKey() && logInResult.getValue()) {
                         isConnected = true;
                         outServer.writeUTF("You are connected");
                         System.out.println("The client #" + clientNumber + " is loggedIn.");
-                    } else {
-                        if(ServerUtils.userExists(username) && !ServerUtils.passwordIsCorrect(username,password)) {
-                            outServer.writeUTF("Erreur dans la saisie du mot de passe\n");
-                        } else if(!ServerUtils.userExists(username)) {
-                            try(BufferedWriter writer = new BufferedWriter(new FileWriter(".\\server\\environment\\userData.txt",true))) {
-                                writer.newLine();
-                                writer.write(username + "." + password);
-                            } catch(IOException e) {
-                                e.printStackTrace();
-                            }
-                            outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
+                    }
+                    else if (!logInResult.getKey()) {
+                        outServer.writeUTF("Erreur dans la saisie du mot de passe\n");
+                    }
+                    else if(!logInResult.getValue()) {
+                        outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
+                    }
+                    else {
+                        try(BufferedWriter writer = new BufferedWriter(new FileWriter(".\\server\\environment\\userData.txt",true))) {
+                            writer.newLine();
+                            writer.write(username + "." + password);
+                        } catch(IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
