@@ -1,8 +1,6 @@
 package server.src;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 public class ClientHandler extends Thread {
     
@@ -33,7 +31,17 @@ public class ClientHandler extends Thread {
                         outServer.writeUTF("You are connected");
                         System.out.println("The client #" + clientNumber + " is loggedIn.");
                     } else {
-                        outServer.writeUTF("Wrong username or password, try again. \n");
+                        if(ServerUtils.userExists(username) && !ServerUtils.passwordIsCorrect(username,password)) {
+                            outServer.writeUTF("Erreur dans la saisie du mot de passe\n");
+                        } else if(!ServerUtils.userExists(username)) {
+                            try(BufferedWriter writer = new BufferedWriter(new FileWriter(".\\server\\environment\\userData.txt",true))) {
+                                writer.newLine();
+                                writer.write(username + "." + password);
+                            } catch(IOException e) {
+                                e.printStackTrace();
+                            }
+                            outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
+                        }
                     }
                 }
             }

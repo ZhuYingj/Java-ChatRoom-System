@@ -26,4 +26,44 @@ public class ServerUtils {
 
         return false;
     }
+    public static boolean userExists(String name) {
+        try {
+            File userDataFile = new File("server\\environment\\userData.txt");
+            @SuppressWarnings("resource")
+            Scanner myReader = new Scanner(userDataFile);
+
+            while (myReader.hasNextLine()) {
+                String[] data = myReader.nextLine().split("\\.");
+                if(data[0].equalsIgnoreCase(name)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public static boolean passwordIsCorrect(String username, String password) {
+        try {
+            File userDataFile = new File("server\\environment\\userData.txt");
+            @SuppressWarnings("resource")
+            Scanner myReader = new Scanner(userDataFile);
+
+            while (myReader.hasNextLine()) {
+                String[] data = myReader.nextLine().split("\\.");
+                if(data[0].equalsIgnoreCase(username) && data[1].equalsIgnoreCase(password)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
