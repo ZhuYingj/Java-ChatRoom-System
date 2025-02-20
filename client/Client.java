@@ -7,10 +7,11 @@ import environment.Pair;
 import src.clientUtils;
 
 public class Client {
+    private static Pair<String, String> serverInfo = new Pair<String, String>("", "");
+    private static boolean isConnected = false;
+    private static boolean isLoggedIn = false;
     private static Socket socket;
     public static void main(String[] args) throws Exception {
-        Pair<String, String> serverInfo = new Pair<String, String>("", "");
-        boolean isConnected = false;
 
         while (!isConnected) {
             serverInfo = Utils.getServerInfo();
@@ -34,14 +35,13 @@ public class Client {
         String helloMessageFromServer = inServer.readUTF();
         System.out.println(helloMessageFromServer);
 
-        boolean isLoggedin = false;
-        while(!isLoggedin) {
+        while(!isLoggedIn) {
             String serverResponse = clientUtils.login(socket);
             if (serverResponse == "You are connected") {
-                isLoggedin = true;
+                isLoggedIn = true;
             }
         }
         
         socket.close();
-        }
+    }
 }
