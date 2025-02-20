@@ -11,7 +11,7 @@ public class ServerUtils {
         Boolean isNameValid = false;
         Boolean isPasswordValid = false;
         try {
-            File userDataFile = new File("server\\environment\\userData.txt");
+            File userDataFile = new File(DataPathConst.USERS_DATA_PATH);
             @SuppressWarnings("resource")
             Scanner myReader = new Scanner(userDataFile);
 

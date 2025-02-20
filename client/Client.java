@@ -29,11 +29,11 @@ public class Client {
 
         String ip = serverInfo.getKey();
         int port = Integer.parseInt(serverInfo.getValue());
-        System.out.format("Serveur lancé sur [%s:%d]", ip, port);
+        System.out.format("Server launched on [%s:%d]", ip, port);
 
         DataInputStream inServer = new DataInputStream(socket.getInputStream());
         String helloMessageFromServer = inServer.readUTF();
-        System.out.println(helloMessageFromServer);
+        System.out.println("\n" + helloMessageFromServer);
 
         while(!isLoggedIn) {
             String serverResponse = clientUtils.login(socket);
