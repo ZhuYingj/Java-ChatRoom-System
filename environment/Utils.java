@@ -1,11 +1,10 @@
 package environment;
 
 import java.util.Scanner;
-import javafx.util.Pair;
 
 public class Utils {
     public static Pair<String, String> getServerInfo() {
-        @SuppressWarnings("resource")
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the ip address for the server (begins with 127): ");
         String serverIp = scanner.nextLine().trim();

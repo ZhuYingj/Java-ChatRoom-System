@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import environment.Utils;
-import javafx.util.Pair;
+import environment.Pair;
 import server.src.ClientHandler;
 
 public class Serveur {

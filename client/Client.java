@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import environment.Utils;
-import javafx.util.Pair;
+import environment.Pair;
 import src.clientUtils;
 
 public class Client {
