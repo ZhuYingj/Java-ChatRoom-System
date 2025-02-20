@@ -34,11 +34,7 @@ public class ServerUtils {
 
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split("\\.");
-                if(data[0].equalsIgnoreCase(name)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return data[0].equalsIgnoreCase(name);
             }
             myReader.close();
         } catch (FileNotFoundException e) {
@@ -54,11 +50,7 @@ public class ServerUtils {
 
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split("\\.");
-                if(data[0].equalsIgnoreCase(username) && data[1].equalsIgnoreCase(password)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return data[0].equalsIgnoreCase(username) && data[1].equalsIgnoreCase(password);
             }
             myReader.close();
         } catch (FileNotFoundException e) {

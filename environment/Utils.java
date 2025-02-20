@@ -20,15 +20,11 @@ public class Utils {
             if(numbers.length == ServerConst.MAX_DEC_IN_IP && Integer.parseInt(numbers[0]) == ServerConst.IP_FIRST_DEC) {
                 for (int i = 1; i < numbers.length; i++) {
                     int dec = Integer.parseInt(numbers[i]);
-                    if (dec < ServerConst.IP_MAX_DEC && dec > ServerConst.IP_MIN_DEC) {
-                    
-                    } else {
-                        return false;
-                    }
+                    if (!(dec < ServerConst.IP_MAX_DEC && dec > ServerConst.IP_MIN_DEC)) return false;
                 }
                 return true;
             } 
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         } 
         return false;
@@ -37,11 +33,7 @@ public class Utils {
     public static boolean isServerPortValid(String serverPort) {
         try {
             int port = Integer.parseInt(serverPort);
-            if (port < ServerConst.MAX_PORT && port > ServerConst.MIN_PORT) {
-                return true;
-            } else {
-                return false;
-            }
+            return port <= ServerConst.MAX_PORT && port >= ServerConst.MIN_PORT;
         } catch (NumberFormatException e) {
             return false;
         } 
