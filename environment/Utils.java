@@ -17,17 +17,15 @@ public class Utils {
     public static boolean isServerIpValid(String serverIp) {
         String[] numbers = serverIp.split("\\.");
         try {
-            if(numbers.length == ServerConst.MAX_DEC_IN_IP && Integer.parseInt(numbers[0]) == ServerConst.IP_FIRST_DEC) {
-                for (int i = 1; i < numbers.length; i++) {
-                    int dec = Integer.parseInt(numbers[i]);
-                    if (!(dec < ServerConst.IP_MAX_DEC && dec > ServerConst.IP_MIN_DEC)) return false;
-                }
-                return true;
-            } 
+            if(!(numbers.length == ServerConst.MAX_DEC_IN_IP && Integer.parseInt(numbers[0]) == ServerConst.IP_FIRST_DEC)) return false;
+            for (int i = 1; i < numbers.length; i++) {
+                int dec = Integer.parseInt(numbers[i]);
+                if (!(dec < ServerConst.IP_MAX_DEC && dec > ServerConst.IP_MIN_DEC)) return false;
+            }
+            return true;
         } catch (NumberFormatException e) {
             return false;
-        } 
-        return false;
+        }
     }
 
     public static boolean isServerPortValid(String serverPort) {
