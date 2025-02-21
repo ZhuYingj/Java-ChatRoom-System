@@ -7,12 +7,13 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class clientUtils {
+    private static Scanner scanner = new Scanner(System.in);
     public static String login(Socket socket) throws IOException {
         DataOutputStream outClient = new DataOutputStream(socket.getOutputStream()); 
         DataInputStream inServer = new DataInputStream(socket.getInputStream());
 
         @SuppressWarnings("resource")
-        Scanner scanner = new Scanner(System.in);
+        //Scanner scanner = new Scanner(System.in);
         String serverMessageUsername = inServer.readUTF();
         System.out.println(serverMessageUsername);
 
@@ -28,6 +29,16 @@ public class clientUtils {
         String serverResponse = inServer.readUTF();
         System.out.println(serverResponse);
 
+        return serverResponse;
+    }
+
+    public static String sendMessage(Socket socket) throws IOException {
+        DataOutputStream outClient = new DataOutputStream(socket.getOutputStream());
+        DataInputStream inServer = new DataInputStream(socket.getInputStream());
+        String message = scanner.nextLine().trim();
+        outClient.writeUTF(message);
+        String serverResponse = inServer.readUTF();
+        System.out.println(serverResponse);
         return serverResponse;
     }
 }

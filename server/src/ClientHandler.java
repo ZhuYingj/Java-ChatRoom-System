@@ -47,7 +47,7 @@ public class ClientHandler extends Thread {
                 DataInputStream inClientMessage = new DataInputStream(socket.getInputStream());
                 String message = inClientMessage.readUTF();
                 if(message.equalsIgnoreCase("exit")) {
-                    outServer.writeUTF("Deconnection a implementer");
+                    outServer.writeUTF("disconnected");
                     break;
                 }
                 if(!message.isEmpty()) {
@@ -76,13 +76,15 @@ public class ClientHandler extends Thread {
     }
 
     private synchronized void saveMessage(String username, String ip, String port, String message) {
+        System.out.println("saving message");
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String messageLog = String.format("%s,%s,%d,%s,%s%n", username, ip, port, timestamp, message);
+        String messageLog = String.format("%s,%s,%s,%s,%s%n", username, ip.substring(1, ip.length()), port, timestamp, message);
         File file = new File(DataPathConst.MESSAGES_DATA_PATH);
         try {
             FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(messageLog);
+            bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

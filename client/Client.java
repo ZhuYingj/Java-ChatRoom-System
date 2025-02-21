@@ -37,8 +37,15 @@ public class Client {
 
         while(!isLoggedIn) {
             String serverResponse = clientUtils.login(socket);
-            if (serverResponse == "You are connected") {
+            if (serverResponse.equals("You are connected")) {
                 isLoggedIn = true;
+            }
+        }
+        while(isLoggedIn) {
+            DataInputStream inServerLoggedIn = new DataInputStream(socket.getInputStream());
+            String serverResponse = clientUtils.sendMessage(socket);
+            if (serverResponse.equals("disconnected")) {
+                isLoggedIn = false;
             }
         }
         
