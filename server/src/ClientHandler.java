@@ -47,6 +47,7 @@ public class ClientHandler extends Thread {
                         System.out.println("The client #" + clientNumber + " is logged in.");
                         outServer.writeUTF(loadMessage());
                         Serveur.broadCastMessage(username + " rejoin la conversation !", this);
+                        Serveur.clientHandlers.add(this);
                     } else if (!logInResult.getKey()) {
                         outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
                         saveUser();
@@ -126,7 +127,7 @@ public class ClientHandler extends Thread {
             lastLines.addAll(lines);
 
             for (String msg : lastLines) {
-                String[] partsFromLine = msg.split(",");
+                String[] partsFromLine = msg.split(",", 5);
                 String formattedMsg = String.format("[%s - %s:%s - %s]: %s",
                         partsFromLine[0], partsFromLine[1], partsFromLine[2], partsFromLine[3], partsFromLine[4]);
                 history += formattedMsg + "\n";

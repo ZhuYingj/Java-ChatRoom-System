@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Serveur {
     private static ServerSocket Listener;
-    private static List<ClientHandler> clientHandlers = new ArrayList<>();
+    public static List<ClientHandler> clientHandlers = new ArrayList<>();
     public static void main(String[] args) throws Exception {
         int clientNumber = 0;
         Pair<String, String> serverInfo = new Pair<String, String>("", "");
@@ -36,7 +36,6 @@ public class Serveur {
         try {
             while (true) {
                 ClientHandler handler = new ClientHandler(Listener.accept(), clientNumber++);
-                clientHandlers.add(handler);
                 handler.start();
             }
         } finally {
