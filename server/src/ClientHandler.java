@@ -41,18 +41,20 @@ public class ClientHandler extends Thread {
                     password = inClient.readUTF();
 
                     Pair<Boolean, Boolean> logInResult = ServerUtils.logIn(username, password);
-                    if (logInResult.getKey() && logInResult.getValue()) {
+
+                    if(logInResult.getKey() && !logInResult.getValue()) {
+                        outServer.writeUTF("Erreur dans la saisie du mot de passe\n");
+                    } else {
+                        if (!logInResult.getKey()) {
+                            outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
+                            saveUser();
+                        }
                         isConnected = true;
                         outServer.writeUTF("You are connected");
                         System.out.println("The client #" + clientNumber + " is logged in.");
                         outServer.writeUTF(loadMessage());
                         Serveur.broadCastMessage(username + " rejoin la conversation !", this);
                         Serveur.clientHandlers.add(this);
-                    } else if (!logInResult.getKey()) {
-                        outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
-                        saveUser();
-                    } else if(!logInResult.getValue()) {
-                        outServer.writeUTF("Erreur dans la saisie du mot de passe\n");
                     }
                 }
                 DataInputStream inClientMessage = new DataInputStream(socket.getInputStream());
@@ -83,7 +85,7 @@ public class ClientHandler extends Thread {
             System.out.println("Connection with client# " + clientNumber+ " closed");
         }
     }
-    
+
     public synchronized void saveUser() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DataPathConst.USERS_DATA_PATH, true))) {
             writer.write(username + "," + password);

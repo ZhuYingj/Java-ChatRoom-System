@@ -38,7 +38,11 @@ public class Client {
         while(!isLoggedIn) {
             String serverResponse = clientUtils.login(socket);
             String history;
-            if (serverResponse.equals("You are connected")) {
+            if (serverResponse.equals("You are connected") || serverResponse.contains("création du compte")) {
+                if (serverResponse.contains("création du compte")) {
+                    String connectedMessage = inServer.readUTF();
+                    System.out.println(connectedMessage);
+                }
                 isLoggedIn = true;
                 System.out.print("Voici l'historique des derniers messages :\n");
                 history = inServer.readUTF();
