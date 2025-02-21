@@ -1,25 +1,35 @@
 package server.src;
 
 import environment.Pair;
+import server.Serveur;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class ClientHandler extends Thread {
     private Socket socket;
     private int clientNumber;
     private String username;
     private String password;
+    private DataOutputStream outServer;
+
     public ClientHandler(Socket socket, int clientNumber) {
         this.socket = socket;
-        this.clientNumber = clientNumber; 
+        this.clientNumber = clientNumber;
+        try {
+            outServer = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("New connection with client#" + clientNumber + " at " + socket);
     }
     
     public void run() { 
         try {
-            DataOutputStream outServer = new DataOutputStream(socket.getOutputStream()); 
             outServer.writeUTF("Hello from server - you are client#" + clientNumber);
             boolean isConnected = false;
 
@@ -35,31 +45,34 @@ public class ClientHandler extends Thread {
                     if (logInResult.getKey() && logInResult.getValue()) {
                         isConnected = true;
                         outServer.writeUTF("You are connected");
-                        System.out.println("The client #" + clientNumber + " is loggedIn.");
+                        System.out.println("The client #" + clientNumber + " is logged in.");
+                        outServer.writeUTF(loadMessage());
                     } else if (!logInResult.getKey()) {
                         outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
-                        //creer lutilisateur
+                        saveUser();
                     } else if(!logInResult.getValue()) {
                         outServer.writeUTF("Erreur dans la saisie du mot de passe\n");
-                    } else saveUser();
+                    }
                 }
-                //add message
                 DataInputStream inClientMessage = new DataInputStream(socket.getInputStream());
                 String message = inClientMessage.readUTF();
                 if(message.equalsIgnoreCase("exit")) {
                     outServer.writeUTF("disconnected");
                     break;
                 }
+                //broadcastMessage(message);
                 if(!message.isEmpty()) {
                     outServer.writeUTF("message saved");
                     saveMessage(username, socket.getInetAddress().toString(), Integer.toString(socket.getPort()), message);
+                    Serveur.broadcastMessage(message, this); // Broadcast the message
                 }
             }
         } catch (IOException e) {
             System.out.println("Error handling client# " + clientNumber + ": " + e);
         } finally {
             try {
-            socket.close();
+                Serveur.removeClient(this);
+                socket.close();
             } catch (IOException e) {
                 System.out.println("Couldn't close a socket, what's going on?");
             }
@@ -77,7 +90,7 @@ public class ClientHandler extends Thread {
 
     private synchronized void saveMessage(String username, String ip, String port, String message) {
         System.out.println("saving message");
-        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd@HH:mm:ss"));
         String messageLog = String.format("%s,%s,%s,%s,%s%n", username, ip.substring(1, ip.length()), port, timestamp, message);
         File file = new File(DataPathConst.MESSAGES_DATA_PATH);
         try {
@@ -85,6 +98,45 @@ public class ClientHandler extends Thread {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(messageLog);
             bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private synchronized String loadMessage() {
+
+        File file = new File(DataPathConst.MESSAGES_DATA_PATH);
+        List<String> lastLines = new ArrayList<>();
+        String history = "";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            LinkedList<String> lines = new LinkedList<>();
+
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+                if (lines.size() > 15) {
+                    lines.poll();
+                }
+            }
+            lastLines.addAll(lines);
+
+            for (String msg : lastLines) {
+                String[] partsFromLine = msg.split(",");
+                String formattedMsg = String.format("[%s - %s:%s - %s]: %s",
+                        partsFromLine[0], partsFromLine[1], partsFromLine[2], partsFromLine[3], partsFromLine[4]);
+                history += formattedMsg + "\n";
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return history;
+    }
+
+    public synchronized void sendMessage(String message) {
+        try {
+            outServer.writeUTF(message);
         } catch (IOException e) {
             e.printStackTrace();
         }

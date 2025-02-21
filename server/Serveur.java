@@ -6,10 +6,11 @@ import java.net.ServerSocket;
 import environment.Utils;
 import environment.Pair;
 import server.src.ClientHandler;
+import java.util.*;
 
 public class Serveur {
-    private static ServerSocket Listener; 
-
+    private static ServerSocket Listener;
+    private static List<ClientHandler> clientHandlers = new ArrayList<>();
     public static void main(String[] args) throws Exception {
         int clientNumber = 0;
         Pair<String, String> serverInfo = new Pair<String, String>("", "");
@@ -34,10 +35,25 @@ public class Serveur {
         System.out.format("The server is running on %s:%d%n", ip, port);
         try {
             while (true) {
-                new ClientHandler(Listener.accept(), clientNumber++).start();
+                ClientHandler handler = new ClientHandler(Listener.accept(), clientNumber++);
+                clientHandlers.add(handler);
+                handler.start();
             }
         } finally {
             Listener.close();
         }
+    }
+
+    public static void broadcastMessage(String message, ClientHandler sender) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler != sender) {
+                clientHandler.sendMessage(message);
+            }
+        }
+    }
+
+    // Remove a client from the list when they disconnect
+    public static void removeClient(ClientHandler clientHandler) {
+        clientHandlers.remove(clientHandler);
     }
 }

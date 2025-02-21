@@ -35,7 +35,15 @@ public class clientUtils {
     public static String sendMessage(Socket socket) throws IOException {
         DataOutputStream outClient = new DataOutputStream(socket.getOutputStream());
         DataInputStream inServer = new DataInputStream(socket.getInputStream());
-        String message = scanner.nextLine().trim();
+        String message = "";
+        while(true) {
+            message = scanner.nextLine().trim();
+            if (message.length() < 200) {
+                break;
+            } else {
+                System.out.print("Réessayez d'envoyer un message de taille plus petit que 200\n");
+            }
+        }
         outClient.writeUTF(message);
         String serverResponse = inServer.readUTF();
         System.out.println(serverResponse);
