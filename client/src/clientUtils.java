@@ -17,7 +17,15 @@ public class clientUtils {
         String serverMessageUsername = inServer.readUTF();
         System.out.println(serverMessageUsername);
 
-        String username = scanner.nextLine().trim();
+        String username;
+        while (true) {
+            username = scanner.nextLine().trim();
+            if (username.contains(",")) {
+                System.out.println("Le nom d'utilisateur ne peut pas contenir de virgule. Essayez encore.");
+            } else {
+                break;
+            }
+        }
         outClient.writeUTF(username);
 
         String serverMessagePassWord = inServer.readUTF();

@@ -82,17 +82,17 @@ public class ClientHandler extends Thread {
             System.out.println("Connection with client# " + clientNumber+ " closed");
         }
     }
-    private synchronized void saveUser() {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(DataPathConst.USERS_DATA_PATH,true))) {
-            writer.newLine();
-            writer.write(username + "." + password);
-        } catch(IOException e) {
+    
+    public synchronized void saveUser() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DataPathConst.USERS_DATA_PATH, true))) {
+            writer.write(username + "," + password);
+            writer.newLine(); 
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private synchronized void saveMessage(String username, String ip, String port, String message) {
-        System.out.println("saving message");
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd@HH:mm:ss"));
         String messageLog = String.format("%s,%s,%s,%s,%s%n", username, ip.substring(1, ip.length()), port, timestamp, message);
         File file = new File(DataPathConst.MESSAGES_DATA_PATH);
@@ -101,6 +101,7 @@ public class ClientHandler extends Thread {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(messageLog);
             bufferedWriter.close();
+            System.out.println("Message saved");
         } catch (IOException e) {
             e.printStackTrace();
         }

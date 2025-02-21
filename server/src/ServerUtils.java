@@ -10,21 +10,17 @@ public class ServerUtils {
     public static Pair<Boolean, Boolean> logIn(String name, String password) {
         Boolean isNameValid = false;
         Boolean isPasswordValid = false;
-        try {
-            File userDataFile = new File(DataPathConst.USERS_DATA_PATH);
-            @SuppressWarnings("resource")
-            Scanner myReader = new Scanner(userDataFile);
-
+        try (Scanner myReader = new Scanner(new File(DataPathConst.USERS_DATA_PATH))) {
             while (myReader.hasNextLine()) {
-                String[] data = myReader.nextLine().split("\\.");
-                if(data[0].contentEquals(name)) {
+                String[] data = myReader.nextLine().split(",");
+                if (data[0].equals(name)) { 
                     isNameValid = true;
-                    isPasswordValid = data[1].contentEquals(password);
+                    isPasswordValid = data[1].equals(password);
                     break;
                 }
             }
-            myReader.close();
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
