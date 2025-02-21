@@ -44,15 +44,20 @@ public class Serveur {
         }
     }
 
-    public static void broadcastMessage(String message, ClientHandler sender) {
+    public static void emitMessage(String message, ClientHandler sender) {
         for (ClientHandler clientHandler : clientHandlers) {
-            if (clientHandler != sender) {
+            clientHandler.sendMessage(message);
+        }
+    }
+
+    public static void broadCastMessage(String message, ClientHandler sender) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            if(clientHandler != sender) {
                 clientHandler.sendMessage(message);
             }
         }
     }
 
-    // Remove a client from the list when they disconnect
     public static void removeClient(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
     }

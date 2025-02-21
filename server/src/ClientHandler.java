@@ -4,7 +4,6 @@ import environment.Pair;
 import server.Serveur;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +46,7 @@ public class ClientHandler extends Thread {
                         outServer.writeUTF("You are connected");
                         System.out.println("The client #" + clientNumber + " is logged in.");
                         outServer.writeUTF(loadMessage());
+                        Serveur.broadCastMessage(username + " rejoin la conversation !", this);
                     } else if (!logInResult.getKey()) {
                         outServer.writeUTF("L'utilisateur n'existe pas, création du compte de " + username + " dans la base de donnée.\n");
                         saveUser();
@@ -58,13 +58,16 @@ public class ClientHandler extends Thread {
                 String message = inClientMessage.readUTF();
                 if(message.equalsIgnoreCase("exit")) {
                     outServer.writeUTF("disconnected");
+                    Serveur.broadCastMessage(username + " a quitté la conversation !", this);
                     break;
                 }
-                //broadcastMessage(message);
                 if(!message.isEmpty()) {
-                    outServer.writeUTF("message saved");
                     saveMessage(username, socket.getInetAddress().toString(), Integer.toString(socket.getPort()), message);
-                    Serveur.broadcastMessage(message, this); // Broadcast the message
+                    String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd@HH:mm:ss"));
+                    String formattedMsg = String.format("[%s - %s:%s - %s]: %s",
+                        username,socket.getInetAddress().toString().substring(1,
+                         socket.getInetAddress().toString().length()),Integer.toString(socket.getPort()), timestamp, message);
+                    Serveur.emitMessage(formattedMsg, this);
                 }
             }
         } catch (IOException e) {

@@ -37,22 +37,35 @@ public class Client {
 
         while(!isLoggedIn) {
             String serverResponse = clientUtils.login(socket);
-            DataInputStream inServerLoggedIn = new DataInputStream(socket.getInputStream());
             String history;
             if (serverResponse.equals("You are connected")) {
                 isLoggedIn = true;
                 System.out.print("Voici l'historique des derniers messages :\n");
-                history = inServerLoggedIn.readUTF();
+                history = inServer.readUTF();
                 System.out.println(history);
             }
         }
-        while(isLoggedIn) {
-           // DataInputStream inServerLoggedIn = new DataInputStream(socket.getInputStream());
-            String serverResponse = clientUtils.sendMessage(socket);
-            if (serverResponse.equals("disconnected")) {
-                isLoggedIn = false;
+
+        Thread messageReceiverThread = new Thread(() -> {
+            try {
+                while (isLoggedIn) {
+                    String serverMessage = inServer.readUTF();
+                    System.out.println(serverMessage);
+                }
+            } catch (IOException e) {
+                
             }
+        });
+        messageReceiverThread.start();
+        
+        while (isLoggedIn) {
+           String message = clientUtils.sendMessage(socket);
+           if(message.equalsIgnoreCase("exit")) {
+            isLoggedIn = false;
+           }
         }
+            
         socket.close();
+       
     }
 }

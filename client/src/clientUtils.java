@@ -13,7 +13,7 @@ public class clientUtils {
         DataInputStream inServer = new DataInputStream(socket.getInputStream());
 
         @SuppressWarnings("resource")
-        //Scanner scanner = new Scanner(System.in);
+
         String serverMessageUsername = inServer.readUTF();
         System.out.println(serverMessageUsername);
 
@@ -34,19 +34,17 @@ public class clientUtils {
 
     public static String sendMessage(Socket socket) throws IOException {
         DataOutputStream outClient = new DataOutputStream(socket.getOutputStream());
-        DataInputStream inServer = new DataInputStream(socket.getInputStream());
         String message = "";
+
         while(true) {
             message = scanner.nextLine().trim();
             if (message.length() < 200) {
+                outClient.writeUTF(message);
                 break;
             } else {
                 System.out.print("Réessayez d'envoyer un message de taille plus petit que 200\n");
             }
         }
-        outClient.writeUTF(message);
-        String serverResponse = inServer.readUTF();
-        System.out.println(serverResponse);
-        return serverResponse;
+        return message;
     }
 }
