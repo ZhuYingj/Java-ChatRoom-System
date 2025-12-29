@@ -1,5 +1,5 @@
 # Un système de chat client-serveur développé en Java utilisant les sockets et les threads.
-Ce projet implémente une application de clavardage (chat) complète avec architecture client-serveur. Le système permet à plusieurs utilisateurs de se connecter simultanément, d'échanger des messages en temps réel, et de conserver un historique complet des conversations.
+Ce projet implémente une application de clavardage complète avec architecture client-serveur. Le système permet à plusieurs utilisateurs de se connecter simultanément, d'échanger des messages en temps réel, et de conserver un historique complet des conversations.
 
 # 💻 Utilisation
 Démarrage du serveur
